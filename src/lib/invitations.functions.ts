@@ -85,6 +85,8 @@ export const approvePlanRequest = createServerFn({ method: "POST" })
 export const getInvitation = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ token: z.string().min(10).max(200) }).parse(input))
   .handler(async ({ data }) => {
+    const { guardPublicRate } = await import("@/lib/rate-limit-guard.server");
+    await guardPublicRate("invite_lookup", 30, 60);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: invite } = await supabaseAdmin
       .from("invitations")
@@ -109,6 +111,8 @@ export const acceptInvitation = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => z.object({ token: z.string().min(10).max(200) }).parse(input))
   .handler(async ({ data, context }) => {
     const { userId, claims } = context;
+    const { guardPublicRate } = await import("@/lib/rate-limit-guard.server");
+    await guardPublicRate("invite_accept", 10, 60);
     const userEmail = String((claims as { email?: string }).email ?? "").toLowerCase();
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 

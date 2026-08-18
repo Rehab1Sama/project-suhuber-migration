@@ -38,6 +38,12 @@ export const Route = createFileRoute("/api/public/webhooks/payments")({
         const secret = process.env["PAYMENTS_WEBHOOK_SECRET"];
         if (!secret) return new Response("Webhook not configured", { status: 503 });
 
+        // حماية بسيطة: 60 طلبًا لكل دقيقة لكل عنوان (المسار مكشوف للعامة)
+        const { clientIp, checkRateLimit, tooManyRequests } = await import("@/lib/rate-limit.server");
+        if (!(await checkRateLimit("payments_webhook", clientIp(request), 60, 60))) {
+          return tooManyRequests();
+        }
+
         const rawBody = await request.text();
         const signature =
           request.headers.get("x-payment-signature") ??
