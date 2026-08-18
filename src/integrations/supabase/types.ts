@@ -906,6 +906,33 @@ export type Database = {
           },
         ]
       }
+      rate_limits: {
+        Row: {
+          bucket: string
+          count: number
+          created_at: string
+          id: string
+          identifier: string
+          window_start: string
+        }
+        Insert: {
+          bucket: string
+          count?: number
+          created_at?: string
+          id?: string
+          identifier: string
+          window_start: string
+        }
+        Update: {
+          bucket?: string
+          count?: number
+          created_at?: string
+          id?: string
+          identifier?: string
+          window_start?: string
+        }
+        Relationships: []
+      }
       students: {
         Row: {
           created_at: string
@@ -1263,9 +1290,22 @@ export type Database = {
           paid_total: number
         }[]
       }
+      rate_limit_hit: {
+        Args: {
+          _bucket: string
+          _identifier: string
+          _limit: number
+          _window_seconds: number
+        }
+        Returns: boolean
+      }
       tenant_has_feature: {
         Args: { _feature_key: string; _tenant_id: string }
         Returns: boolean
+      }
+      tenant_plan_limit_internal: {
+        Args: { _kind: string; _tenant_id: string }
+        Returns: number
       }
       tenant_plan_limits: {
         Args: { _tenant_id: string }
