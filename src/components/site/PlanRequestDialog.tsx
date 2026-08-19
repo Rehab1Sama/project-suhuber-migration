@@ -2,7 +2,8 @@ import { useState } from "react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { submitPlanRequest } from "@/lib/requests.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -39,6 +40,7 @@ export function PlanRequestDialog({
   period: BillingPeriod;
 }) {
   const [busy, setBusy] = useState(false);
+  const sendRequest = useServerFn(submitPlanRequest);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -56,21 +58,24 @@ export function PlanRequestDialog({
     }
 
     setBusy(true);
-    const { error } = await supabase.from("plan_requests").insert({
-      plan_id: planId,
-      billing_period: period,
-      tenant_name: parsed.data.tenant_name,
-      contact_name: parsed.data.contact_name,
-      email: parsed.data.email,
-      phone: parsed.data.phone ?? null,
-      notes: parsed.data.notes ?? null,
-    });
-    setBusy(false);
-
-    if (error) {
+    try {
+      await sendRequest({
+        data: {
+          planId,
+          billingPeriod: period,
+          tenantName: parsed.data.tenant_name,
+          contactName: parsed.data.contact_name,
+          email: parsed.data.email,
+          phone: parsed.data.phone ?? null,
+          notes: parsed.data.notes ?? null,
+        },
+      });
+    } catch {
+      setBusy(false);
       toast.error("تعذّر إرسال الطلب، حاولي مرة أخرى.");
       return;
     }
+    setBusy(false);
     toast.success("وصلنا طلبك — سنتواصل معك خلال ٤٨ ساعة.");
     onOpenChange(false);
   }
