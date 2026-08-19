@@ -13,9 +13,18 @@ function escapeHtml(value: string): string {
     .replace(/"/g, "&quot;");
 }
 
+/** يقبل EMAIL_FROM بأي صيغة ويُرجع صيغة صحيحة بحروف لاتينية (Resend يرفض بعض الأسماء غير اللاتينية) */
+function normalizeFrom(raw: string): string | null {
+  const address = raw.match(/[^<>\s,"']+@[^<>\s,"']+\.[a-zA-Z]{2,}/)?.[0];
+  if (!address) return null;
+  return `Suhub <${address}>`;
+}
+
 export async function notifyPlatformOwner({ subject, lines, replyTo }: NotifyInput): Promise<void> {
   const to = process.env["ADMIN_NOTIFY_EMAIL"];
-  const from = process.env["EMAIL_FROM"];
+  const fromRaw = process.env["EMAIL_FROM"];
+  // في حال عدم ضبط نطاق مُوثَّق، نستخدم مُرسل Resend الافتراضي (يوصّل لصاحبة الحساب فقط — وهو المطلوب هنا)
+  const from = (fromRaw ? normalizeFrom(fromRaw) : null) ?? "Suhub <onboarding@resend.dev>";
   const apiKey = process.env["RESEND_API_KEY"];
 
   const html = `<div dir="rtl" style="font-family:system-ui,-apple-system,Segoe UI,Tahoma,sans-serif;line-height:1.8;color:#1f2937">
