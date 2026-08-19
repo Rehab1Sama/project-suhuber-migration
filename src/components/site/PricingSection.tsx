@@ -12,6 +12,7 @@ import {
   planDiscountPercent,
   planLimits,
   planYearlySavingsPercent,
+  planSetupFeeLabel,
   type BillingPeriod,
   type PlanRow,
 } from "@/lib/pricing";
@@ -132,9 +133,15 @@ export function PricingSection() {
                     </span>
                   ) : null}
                   {plan.is_custom_priced ? (
-                    <span className="text-xs text-muted-foreground">اتفاق سنوي أو شراء كامل</span>
+                    <span className="text-xs text-muted-foreground">اتفاق شهري أو سنوي</span>
                   ) : null}
                 </div>
+
+                {planSetupFeeLabel(plan) ? (
+                  <p className="mt-1 text-xs font-medium text-muted-foreground">
+                    {planSetupFeeLabel(plan)}
+                  </p>
+                ) : null}
 
                 <dl className="mt-5 grid grid-cols-3 gap-2 rounded-xl border border-border bg-muted/40 p-3 text-center">
                   {limits.map((limit, i) => {
