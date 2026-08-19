@@ -1,0 +1,1 @@
+ALTER TABLE public.plans ADD COLUMN IF NOT EXISTS setup_fee numeric NOT NULL DEFAULT 0;
