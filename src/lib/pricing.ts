@@ -6,7 +6,6 @@ export type BillingPeriod = Database["public"]["Enums"]["billing_period"];
 export const BILLING_OPTIONS: { value: BillingPeriod; label: string; hint?: string }[] = [
   { value: "monthly", label: "شهري" },
   { value: "yearly", label: "سنوي", hint: "شهرين مجانًا" },
-  { value: "lifetime", label: "شراء كامل", hint: "دفعة واحدة" },
 ];
 
 export const BILLING_LABELS: Record<BillingPeriod, string> = {
@@ -25,6 +24,18 @@ export function planPrice(plan: PlanRow, period: BillingPeriod): number {
   if (period === "yearly") return Number(plan.price_yearly);
   if (period === "lifetime") return Number(plan.price_lifetime);
   return Number(plan.price_monthly);
+}
+
+/** رسوم التجهيز لمرة واحدة عند الاشتراك (0 = لا يوجد) */
+export function planSetupFee(plan: PlanRow): number {
+  return Number(plan.setup_fee ?? 0);
+}
+
+/** نص رسوم التجهيز الجاهز للعرض */
+export function planSetupFeeLabel(plan: PlanRow): string | null {
+  const fee = planSetupFee(plan);
+  if (!fee) return null;
+  return `+ رسوم تجهيز ${fee.toLocaleString("ar-EG")} ${plan.currency} تُدفع مرة واحدة`;
 }
 
 /** نص السعر المعروض للباقة حسب نوع الدفع */
