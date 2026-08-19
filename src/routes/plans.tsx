@@ -11,12 +11,12 @@ export const Route = createFileRoute("/plans")({
       {
         name: "description",
         content:
-          "باقات سُحُب لإدارة المقارئ القرآنية: الانطلاقة والنماء والسحاب، بدفع شهري أو سنوي أو شراء كامل دفعة واحدة.",
+          "باقات سُحُب لإدارة المقارئ القرآنية: غيمة وسحابة وغيث، باشتراك شهري أو سنوي (شهران مجانًا) مع رسوم تجهيز مرة واحدة.",
       },
       { property: "og:title", content: "الباقات والأسعار — سُحُب" },
       {
         property: "og:description",
-        content: "ادفعي شهريًا أو سنويًا أو اشتري النظام بالكامل — وترقّي في أي وقت.",
+        content: "اشتراك شهري أو سنوي بشهرين مجانًا، مع رسوم تجهيز مرة واحدة — وترقّي في أي وقت.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -33,9 +33,27 @@ function PlansPage() {
         <SectionHeading
           eyebrow="الأسعار"
           title="خطة تنمو مع مقرأتك"
-          subtitle="اختاري نوع الدفع المناسب: شهري، سنوي بخصم، أو شراء كامل دفعة واحدة. والترقية متاحة في أي وقت."
+          subtitle="اختاري نوع الاشتراك المناسب: شهري أو سنوي بشهرين مجانًا، مع رسوم تجهيز تُدفع مرة واحدة عند الاشتراك. والترقية متاحة في أي وقت."
         />
         <PricingSection />
+
+        <section className="mt-12">
+          <article className="surface-panel flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h3 className="text-lg font-semibold">تجهيز مستقل</h3>
+              <p className="mt-1.5 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                باقة خاصة للمقارئ ذات الاحتياج المختلف: تجهيز وإعداد مخصّص لمقرأتك، ويُناقش تفصيليًا
+                عبر التواصل المباشر لتحديد النطاق والمدة والتكلفة المناسبة.
+              </p>
+            </div>
+            <Link
+              to="/contact"
+              className="inline-flex shrink-0 items-center justify-center rounded-xl border border-border px-5 py-2.5 text-sm font-medium transition-colors hover:bg-muted"
+            >
+              تواصلي معنا
+            </Link>
+          </article>
+        </section>
 
         <p className="mt-8 text-center text-sm text-muted-foreground">
           تبغين مقارنة تفصيلية بين الباقات؟{" "}
@@ -50,8 +68,12 @@ function PlansPage() {
           <div className="mt-8 grid gap-4 md:grid-cols-2">
             {[
               {
-                q: "ما الفرق بين الدفع السنوي والشراء الكامل؟",
-                a: "الدفع السنوي اشتراك يُجدَّد كل عام بخصم شهرين، أما الشراء الكامل فدفعة واحدة تمنحك النظام بدون تجديد.",
+                q: "ما الفرق بين الاشتراك الشهري والسنوي؟",
+                a: "الاشتراك الشهري يُجدَّد كل شهر، والسنوي يُجدَّد كل عام بسعر عشرة أشهر فقط — أي شهران مجانًا.",
+              },
+              {
+                q: "ما هي رسوم التجهيز؟",
+                a: "مبلغ يُدفع مرة واحدة عند الاشتراك لتجهيز مقرأتك: إعداد الحساب والمسارات والحلقات وتدريب الفريق.",
               },
               {
                 q: "هل يمكن الترقية لاحقًا؟",
