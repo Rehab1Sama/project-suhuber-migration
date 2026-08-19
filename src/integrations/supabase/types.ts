@@ -672,6 +672,7 @@ export type Database = {
           price_lifetime: number
           price_monthly: number
           price_yearly: number
+          setup_fee: number
           sort_order: number
           updated_at: string
         }
@@ -695,6 +696,7 @@ export type Database = {
           price_lifetime?: number
           price_monthly?: number
           price_yearly?: number
+          setup_fee?: number
           sort_order?: number
           updated_at?: string
         }
@@ -718,6 +720,7 @@ export type Database = {
           price_lifetime?: number
           price_monthly?: number
           price_yearly?: number
+          setup_fee?: number
           sort_order?: number
           updated_at?: string
         }
