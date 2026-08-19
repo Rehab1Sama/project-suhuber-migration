@@ -3,7 +3,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Loader2, Mail, Clock, ShieldCheck, Send } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { submitContactMessage } from "@/lib/requests.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -49,6 +50,7 @@ const schema = z.object({
 function ContactPage() {
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
+  const sendMessage = useServerFn(submitContactMessage);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -66,17 +68,14 @@ function ContactPage() {
     }
 
     setBusy(true);
-    const { error } = await supabase.from("contact_messages").insert({
-      name: parsed.data.name,
-      email: parsed.data.email,
-      message: `${parsed.data.subject}\n\n${parsed.data.message}`,
-    });
-    setBusy(false);
-
-    if (error) {
+    try {
+      await sendMessage({ data: parsed.data });
+    } catch {
+      setBusy(false);
       toast.error("تعذّر إرسال الرسالة، حاولي مرة أخرى.");
       return;
     }
+    setBusy(false);
     form.reset();
     setSent(true);
     toast.success("وصلتنا رسالتك — سنردّ عليك قريبًا.");
